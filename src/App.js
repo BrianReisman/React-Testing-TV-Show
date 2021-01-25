@@ -12,19 +12,28 @@ export default function App() {
   const [seasons, setSeasons] = useState([]);
   const [selectedSeason, setSelectedSeason] = useState("");
   const episodes = seasons[selectedSeason] || [];
-console.log(show)
+  console.log(show);
+
   // useEffect(() => {
   //   fetchShow(setShow, setSeasons);
   // }, []);
 
   useEffect(() => {
-    fetchShow().then(res => {
-      console.log(res)
-      setShow(res.data);
-      setSeasons(formatSeasons(res.data._embedded.episodes));
-    })
+    const getData = async () => {
+      try {
+        const res = await fetchShow();
+        setShow(res.data);
+        setSeasons(formatSeasons(res.data._embedded.episodes));
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getData(); //* you need to call this to invoke it in useEffect
   }, []);
 
+//* could also do fetchShow().then().catch inside useEffect instead of try/catch
+//* you always want await to be in front of a Promise.
+  
   const handleSelect = (e) => {
     setSelectedSeason(e.value);
   };
